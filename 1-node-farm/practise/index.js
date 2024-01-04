@@ -1,4 +1,5 @@
 const fs = require("fs");
+const http = require("http");
 
 // Blocking code, synchronous way---------------------------------------
 /*
@@ -20,12 +21,13 @@ console.log("file is written");
 //---------------------------------------------------------------------------
 
 //Non-blocking code, asynchronous way ----------------------------------------------
+/*
+fs.readFile("./txt/start.txt", "utf-8", (err, data) => {
+  if (err) return "Error from callback 1";
 
-// fs.readFile("./txt/start.txt", "utf-8", (err, data) => {
-//   if (err) return "Error from callback 1";
+  console.log(data);
+});
 
-//   console.log(data);
-// });
 
 fs.readFile("./txt/startt.txt", "utf-8", (err, data1) => {
   if (err) return console.log("Error from callback 1");
@@ -44,3 +46,13 @@ fs.readFile("./txt/startt.txt", "utf-8", (err, data1) => {
 });
 
 console.log("Reading file ....");
+*/
+
+//Creating Servers in NodeJS-------------------------------------------------------------
+const server = http.createServer((req, res) => {
+  res.end("Hello From the Server!");
+});
+
+server.listen(8000, "127.0.0.1", () => {
+  console.log(`Server is Running on Port: ${8000}`);
+});
