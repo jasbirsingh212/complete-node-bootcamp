@@ -50,14 +50,59 @@ console.log("Reading file ....");
 
 //Creating Servers in NodeJS-------------------------------------------------------------
 
+const replaceTemplate = (temp, product) => {
+  const {
+    id,
+    productName,
+    image,
+    from,
+    nutrients,
+    quantity,
+    price,
+    organic,
+    description,
+  } = product;
+
+  const output = temp
+    .replace(/{%PRODUCTNAME%}/g, productName)
+    .replace(/{%ID%}/g, id)
+    .replace(/{%IMAGE%}/g, image)
+    .replace(/{%PRICE%}/g, price)
+    .replace(/{%QUANTITY%}/g, quantity)
+    .replace(/{%NOT_ORGANIC%}/g, organic || "not-organic")
+    .replace(/{%DESCRIPTION%}/g, description)
+    .replace(/{%FROM%}/g, from)
+    .replace(/{%NUTRIENTS%}/g, nutrients);
+
+  return output;
+};
+
 const data = fs.readFileSync("./dev-data/data.json", "utf-8");
+const tempOverview = fs.readFileSync(
+  "./templates/template-overview.html",
+  "utf-8"
+);
+const tempCard = fs.readFileSync("./templates/template-card.html", "utf-8");
+const tempProduct = fs.readFileSync(
+  "./templates/template-product.html",
+  "utf-8"
+);
 const productData = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
   const pathName = req.url;
 
   if (pathName === "/" || pathName === "/overview") {
-    res.end("This is Overview");
+    const cardHtml = productData
+      ?.map((el) => replaceTemplate(tempCard, el))
+      .join("");
+    const outputTemplate = tempOverview.replace(/{%PRODUCT_CARDS%}/, cardHtml);
+
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+
+    res.end(outputTemplate);
   } else if (pathName === "/product") {
     res.end("This is Product");
   } else if (pathName === "/api") {
