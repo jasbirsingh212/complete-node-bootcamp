@@ -9,5 +9,8 @@ const writeText = `My name is ${arr[0]} ${arr[1]}.
  I want to become a ${arr[3]}.
 `;
 
-fs.writeFileSync("./txt/output.txt", writeText);
+// fs.writeFileSync("./txt/output.txt", writeText);
+// console.log("file is written");
+
+fs.writeFileSync("./txt/output.txt", "I Love Coding!");
 console.log("file is written");
