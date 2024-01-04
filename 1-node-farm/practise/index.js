@@ -1,5 +1,6 @@
 const fs = require("fs");
 const http = require("http");
+const url = require("url");
 
 // Blocking code, synchronous way---------------------------------------
 /*
@@ -90,7 +91,7 @@ const tempProduct = fs.readFileSync(
 const productData = JSON.parse(data);
 
 const server = http.createServer((req, res) => {
-  const pathName = req.url;
+  const { query, pathname: pathName } = url.parse(req.url, true);
 
   if (pathName === "/" || pathName === "/overview") {
     const cardHtml = productData
@@ -104,7 +105,13 @@ const server = http.createServer((req, res) => {
 
     res.end(outputTemplate);
   } else if (pathName === "/product") {
-    res.end("This is Product");
+    const product = productData[query.id];
+    const outputProduct = replaceTemplate(tempProduct, product);
+
+    res.writeHead(200, {
+      "Content-type": "text/html",
+    });
+    res.end(outputProduct);
   } else if (pathName === "/api") {
     res.writeHead(200, {
       "Content-type": "application/json",
